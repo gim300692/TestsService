@@ -1,0 +1,25 @@
+﻿@model TestService.WebUI.Models.AjaxQuestionViewModel
+
+
+    <input type="hidden" name="testId" value="@Model.TestId" />
+    <input type="hidden" name="correctAnswersCount" value="@Model.CorrectAnswersCount" />
+    <input type="hidden" id="CurrentAnswer" name="currentAnswerId" value="">
+    <input type="hidden" name="currentQuestionIndex" value="@Model.CurrentQuestionIndex" />
+
+    <div id="questionBlock">
+        <p>Вопрос № <span id="qIndex">@Model.CurrentQuestionIndex</span> из <span id="qQuantity">@Model.QuestionQuantity</span></p>
+        <div id="questionContent">
+            @Model.Question.QuestionContent
+        </div>
+        <div id="questionAnswers">
+            @foreach (var answer in Model.Answers)
+            {
+                <div>
+                    <p>
+                        @answer.AnswerContent
+                    </p>
+                    <input type="checkbox" id="@answer.Id">
+                </div>
+            }
+        </div>
+    </div>

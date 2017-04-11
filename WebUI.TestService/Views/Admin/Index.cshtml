@@ -1,0 +1,104 @@
+﻿@model IEnumerable<TestService.Domain.Entities.Test>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (User.IsInRole("admin"))
+{
+    <div class="page-header">
+        <h1>Добро пожаловать, администратор </h1>
+    </div>
+
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 overflow">
+                    <div class="transition">
+                        <div id="testsSection" class="section">
+                            @if (Model.Count() != 0)
+                            {
+                                <table class="adminTable">
+                                    <tr><th>Id</th><th>Тема</th><th>Описание</th><th></th></tr>
+                                    @using (Ajax.BeginForm("AjaxAdminGetQuestions", "Admin", new AjaxOptions { UpdateTargetId = "questionsSection" }, new { @id = "getQuestions" }))
+                                    {
+                                        foreach (var test in Model)
+                                        {
+                                            <tr>
+                                                <td id="@test.Id" class="idVariable">
+                                                    @test.Id
+                                                </td>
+                                                <td class="testTheme">
+                                                    <a class="testLink pointer">@test.Theme</a>
+                                                    <input type="hidden" value="@test.Id">
+                                                </td>
+                                                <td class="testDescription">
+                                                    @test.Description
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="editButton btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span> Изменить</button>
+                                                    <button type="button" class="deleteButton btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Удалить</button>
+                                                </td>
+                                            </tr>
+                                        }
+                                        <tr>
+                                            <td>
+                                                <input type="hidden" name="testId" value="" />
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+
+                                <form class="editForm" action="~/Admin/EditEntity">
+                                    <input type="hidden" name="editTestId" />
+                                </form>
+                                <form class="deleteForm">
+                                    <input type="hidden" name="deleteTestId" />
+                                </form>
+                            }
+                            else
+                            {
+                                <p>Нет созданных тестов!</p>
+                            }
+                        </div>
+
+                        <div id="questionsSection" class="section">
+
+                        </div>
+
+
+                        <div id="answersSection" class="section">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="modal_form">
+            <span class="modal_close">X</span>
+            <p id="areYouSerious">Вы уверены, что хотите удалить данный тест?</p>
+            <form action="~/Admin/DeleteEntity" method="post">
+                <div class="yesOrNo">
+                    <input type="hidden" id="testIdModal" name="" value=""/>
+                    <button id="confirmDelete" style="display:inline" type="submit">Да</button>
+                    <button id="cancelDelete" style="display:inline" class="modal_close" type="button">Нет</button>
+                </div>
+            </form>
+        </div>
+        <div id="overlay"></div>
+}
+else
+{
+   <p>У вас нет прав для просмотра этого раздела!</p>
+}
+
+
+@Styles.Render("~/Content/adminStyles")
+
+
+@Scripts.Render("~/bundles/ajax")
+@Scripts.Render("~/bundles/adminScripts")

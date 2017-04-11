@@ -1,0 +1,163 @@
+﻿@model TestService.WebUI.Models.PersonalAreaIndexViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int testCounter = 1;
+}
+
+
+<div class="page-header">
+    <h1>Добро пожаловать в личный кабинет, @Model.UserName </h1>
+</div>
+
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Ваши тесты</h3>
+                    </div>
+                    <div class="panel-body">
+                        @{ if (Model.Tests.Count != 0)
+                            {
+                                foreach (var test in Model.Tests)
+                                {
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" id="@test.Id">
+                                            <span id="testCounter">Тест №@testCounter</span>
+                                            <form action="~/Tests/EditTest">
+                                                @Html.HiddenFor(t => t.Tests.First(m => m.Id == test.Id).Id, new {@id="testId" })
+                                                <button type="submit" class="btn btn-default editTest"><span class="glyphicon glyphicon-pencil"></span>Изменить тест</button>
+                                            </form>
+                                            <form>
+                                                <button type="button" id="go" class="btn btn-default deleteTest"><span class="glyphicon glyphicon-remove"></span>Удалить тест</button>
+                                            </form>
+
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="testInfo">
+                                                <p>
+                                                    @Html.Label("Тема тста:") @Html.DisplayFor(t => t.Tests.First(m => m.Id == test.Id).Theme)
+                                                </p>
+                                                <p>
+                                                    @Html.Label("Описание:") @Html.DisplayFor(t => t.Tests.First(m => m.Id == test.Id).Description)
+                                                </p>
+                                                <p>
+                                                    @Html.Label("Количество вопросов:") @Html.DisplayFor(t => t.Tests.First(m => m.Id == test.Id).QuestionQuantity)
+                                                </p>
+                                                <p>
+                                                    @Html.Label("Время на выполнение теста:") @Html.DisplayFor(t => t.Tests.First(m => m.Id == test.Id).TestSolveTime)
+                                                </p>
+                                                <p>
+                                                    @Html.Label("Действителен до:")
+                                                    @if (Model.ActualTime.CompareTo(test.TestAvalibleTill) == -1)
+                                                    {
+                                                        @Html.DisplayFor(t => t.Tests.First(m => m.Id == test.Id).TestAvalibleTill)
+                                                        <div class="linkGenerator">
+                                                            <span>Ссылка на прохождение теста</span>
+                                                            <div id="personalLink[@test.Id]" class="input-group">
+                                                                <span class="input-group-addon" id="basic-addon3">@ViewBag.Host/PerformTheTest/VerifyPersonalLink/</span>
+                                                                <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" />
+                                                            </div>
+                                                            @using (Ajax.BeginForm("PersonalLinkCreator", "Tests", test, new AjaxOptions { UpdateTargetId = "personalLink" + "[" + test.Id + "]" }))
+                                                            {
+                                                            <button class="personalLinkGenerator btn btn-default btn-sm" type="submit"><span class="glyphicon glyphicon-plus"></span> Cгенерировать ссылку для теста на тему: "@test.Theme"</button>
+                                                            }
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>Тест недействителен!</span>
+                                                    }
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            @if (Model.TestSessions.Where(ts => ts.TestId == test.Id).Count() != 0)
+                                            {
+                                                if (!test.IsAnonimous)
+                                                {
+                                                    <table class="table">
+                                                        <tr><th>Имя</th> <th>Фамилия</th> <th>Возраст</th> <th>Email</th> <th>Телефон</th> <th>Начало/окончание выполнения теста</th> <th>Дано правильных ответов</th></tr>
+                                                        @foreach (var ts in Model.TestSessions.Where(ts => ts.TestId == test.Id))
+                                                        {
+                                                            <tr>
+                                                                <td>@ts.FirstName</td>
+                                                                <td>@ts.LastName</td>
+                                                                <td>@ts.Age</td>
+                                                                <td>@ts.Email</td>
+                                                                <td>@ts.PhoneNumber</td>
+                                                                <td>@ts.StartExecutingTime / @ts.FinishExecutingTime</td>
+                                                                <td>@ts.CorrectAnswersCount</td>
+                                                            </tr>
+                                                        }
+                                                    </table>
+                                                }
+                                                else
+                                                {
+                                                    <table class="table">
+                                                        <tr><th>Начало/окончание выполнения теста</th> <th>Дано правильных ответов</th></tr>
+                                                        @foreach (var ts in Model.TestSessions.Where(ts => ts.TestId == test.Id))
+                                                        {
+                                                            <tr>
+                                                                <td>@ts.StartExecutingTime / @ts.FinishExecutingTime</td>
+                                                                <td>@ts.CorrectAnswersCount</td>
+                                                            </tr>
+                                                        }
+                                                    </table>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <table class="table">
+                                                    <tr><th>Данный тест ещё никто не выполнял</th></tr>
+                                                </table>
+                                            }
+                                        </div>
+                                    testCounter++;
+                                        <br />
+                                }
+
+                            }
+                            else
+                            {
+                                <p>У Вас нет созданных тестов!</p>
+                                <div>
+                                    <form action="~/Tests/CreateTest">
+                                        <button type="submit" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-pencil"></span> Создать свой первый тест прямо сейчас!</button>
+                                    </form>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal_form">
+    <!-- Сaмo oкнo -->
+    <span class="modal_close">X</span> <!-- Кнoпкa зaкрыть -->
+    <p id="areYouSerious">Вы уверены, что хотите удалить данный тест?</p>
+    <form action="~/Tests/DeleteTest" method="post">
+        <div class="yesOrNo">
+            @Html.Hidden("testId", null, new { @id = "testIdModal" })
+            <button id="confirmDelete" style="display:inline" type="submit">Да</button>
+            <button id="cancelDelete" style="display:inline" class="modal_close" type="button">Нет</button>
+        </div>
+    </form>
+</div>
+<div id="overlay"></div><!-- Пoдлoжкa -->
+
+@Styles.Render("~/Content/personalAreaStyles")
+
+@Scripts.Render("~/bundles/ajax")
+@Scripts.Render("~/bundles/personalAreaScripts")
+
+

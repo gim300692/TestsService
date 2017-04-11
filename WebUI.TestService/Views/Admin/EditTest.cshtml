@@ -1,0 +1,64 @@
+﻿@model TestService.Domain.Entities.Test
+
+@{
+    ViewBag.Title = "EditTest";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Редактирование теста</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            @using (Html.BeginForm("EditTestEntity","Admin"))
+            {
+                <div class="testsBlock">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Основные данные</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group">
+                                <span class="input-group-addon">Тема теста</span>
+                                @Html.HiddenFor(m => m.Id)
+                                @Html.HiddenFor(m => m.QuestionQuantity)
+                                @Html.HiddenFor(m => m.UserId)
+                                @Html.TextBoxFor(m => m.Theme, new { @class = "form-control", @placeholder = "Тема теста" })
+                                @Html.ValidationMessageFor(m => m.Theme)
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">Описание теста</span>
+                                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @placeholder = "Описание теста" })
+                                @Html.ValidationMessageFor(m => m.Description)
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">Время на выполнение теста</span>
+                                @Html.TextBoxFor(m => m.TestSolveTime, new { @id = "datetimepicker2", @class = "form-control", @placeholder = "чч:мм" })
+                                @Html.ValidationMessageFor(m => m.TestSolveTime)
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">Анонимность теста</span>
+                                @Html.CheckBoxFor(m => m.IsAnonimous, new { @class = "form-control", @id = "isAnonimousCheck" })
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">Тест действителен до</span>
+                                @Html.TextBoxFor(m => m.TestAvalibleTill, new { @id = "datetimepicker", @class = "form-control", @placeholder = "гггг/мм/дд чч:мм" })
+                                @Html.ValidationMessageFor(m => m.TestAvalibleTill)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p><button type="submit" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-ok"></span> Завершить редактирование теста</button></p>
+         }
+        </div>
+    </div>
+</div>
+
+
+@Styles.Render("~/Content/testCreationStyles")
+@Scripts.Render("~/bundles/datetimepickerScripts")

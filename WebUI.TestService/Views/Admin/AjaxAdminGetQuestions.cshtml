@@ -1,0 +1,42 @@
+﻿@model IEnumerable<TestService.Domain.Entities.Question>
+
+
+@using (Ajax.BeginForm("AjaxAdminGetAnswers", "Admin", new AjaxOptions { UpdateTargetId = "answersSection" }, new { @id = "getAnswers" }))
+{
+    <table class="adminTable">
+        <tr><th>Id</th><th>Содержание вопроса</th><th></th></tr>
+        @foreach (var question in Model)
+        {
+        <tr>
+            <td id="@question.Id" class="idVariable">
+                @question.Id
+            </td>
+            <td class="questionContent">
+                <a class="questionLink pointer">@question.QuestionContent</a>
+                <input type="hidden" value="@question.Id">
+            </td>
+            <td>
+                <button type="button" class="editButton btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span> Изменить</button>
+                <button type="button" class="deleteButton btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Удалить</button>
+            </td>
+        </tr>
+        }
+
+        <tr>
+            <td>
+                <input type="hidden" name="questionId" value="" />
+            </td>
+        </tr>
+   </table>
+}
+
+<button id="backToTests" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-left"></span> Назад к списку тестов</button>
+
+<form class="editForm" action="~/Admin/EditEntity">
+    <input type="hidden" name="editQuestionId" />
+</form>
+<form class="deleteForm" action="~/Admin/DeleteEntity">
+    <input type="hidden" name="deleteQuestionId" />
+</form>
+
+

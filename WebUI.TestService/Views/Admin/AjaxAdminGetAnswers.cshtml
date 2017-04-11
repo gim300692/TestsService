@@ -1,0 +1,43 @@
+﻿
+@model IEnumerable<TestService.Domain.Entities.Answer>
+
+<table class="adminTable">
+    <tr><th>Id</th><th>Содержание ответа</th><th>Правильный ответ</th><th></th></tr>
+    @foreach (var answer in Model)
+    {
+        <tr>
+            <td id="@answer.Id" class="idVariable">
+                @answer.Id
+            </td>
+            <td class="answerContent">
+                <a class="answerLink">@answer.AnswerContent</a>
+                <input type="hidden" value="@answer.Id">
+            </td>
+            <td class="answerIsCorrect">
+                @answer.IsCorrect
+            </td>
+            <td>
+                <button type="button" class="editButton btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span> Изменить</button>
+                <button type="button" class="deleteButton btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span> Удалить</button>
+            </td>
+
+        </tr>
+    }
+
+    <tr>
+        <td>
+            <input type="hidden" name="answerId" value="" />
+        </td>
+    </tr>
+</table>
+
+
+<button id="backToQuestions" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-chevron-left"></span> Назад к списку вопросов</button>
+
+<form class="editForm" action="~/Admin/EditEntity">
+    <input type="hidden" name="editAnswerId" />
+</form>
+<form class="deleteForm" action="~/Admin/DeleteEntity">
+    <input type="hidden" name="deleteAnswerId" />
+</form>
+

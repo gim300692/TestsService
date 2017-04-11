@@ -1,0 +1,79 @@
+﻿@model TestService.WebUI.Models.TestExecutionViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>TestExecution</title>
+    @Styles.Render("~/Content/timerStyles")
+</head>
+<body>
+    <div> 
+            <p>Тест на тему: @Model.Test.Theme</p>
+                    <hr />
+                    @using (Ajax.BeginForm("AjaxGetNextQuestion", "PerformTheTest", new AjaxOptions { UpdateTargetId = "ajaxBlock" }))
+                    {
+                        <div id="ajaxBlock">
+                            <input type="hidden" name="testId" value="@Model.TestId" />
+                            <input type="hidden" name="correctAnswersCount" value="@Model.CorrectAnswersCount" />
+                            <input type="hidden" id="CurrentAnswer" name="currentAnswerId" value="">
+                            <input type="hidden" name="currentQuestionIndex" value="@Model.CurrentQuestionIndex" />
+
+                            <div id="questionBlock">
+                                <p>Вопрос № <span id="qIndex">@Model.CurrentQuestionIndex</span> из <span id="qQuantity">@Model.QuestionQuantity</span></p>
+                                <div id="questionContent">
+                                    @Model.Question.QuestionContent
+                                </div>
+                                <div id="questionAnswers">
+                                    @foreach (var answer in Model.Answers)
+                                    {
+                                        <div>
+                                            <p>
+                                                @answer.AnswerContent
+                                            </p>
+                                            <input type="checkbox" id="@answer.Id">
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <p><button type="submit" id="nextQuestion">Следующий вопрос</button></p>
+                    }
+
+                @using(Html.BeginForm("TestExecution", "PerformTheTest", FormMethod.Post, new { @id = "mainForm"}))
+                {
+                    @Html.HiddenFor(m => m.FirstName)
+                    @Html.HiddenFor(m => m.LastName)
+                    @Html.HiddenFor(m => m.Age)
+                    @Html.HiddenFor(m => m.Email)
+                    @Html.HiddenFor(m => m.PhoneNumber)
+                    @Html.HiddenFor(m => m.TestId)
+                    @Html.HiddenFor(m => m.CorrectAnswersCount)
+                    @Html.HiddenFor(m => m.PersonalLinkId)
+
+                    <input type="hidden" name="StartExecutionTime" value="@Model.StartExecutionTime" />
+
+
+                    <p><button id="finishTest" style="display:none" type="submit">Завершить выполнение теста</button></p>
+                }
+    </div>
+    <footer>
+        <hr />
+        <div class="timer" data-seconds-left=@Model.TestSolveTime></div>
+    </footer>
+</body>
+</html>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/ajax")
+@Scripts.Render("~/bundles/bootstrap")
+@Scripts.Render("~/bundles/timerScripts")
+@Scripts.Render("~/bundles/testExecutionScripts")
+
+
+

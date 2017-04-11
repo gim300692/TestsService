@@ -1,0 +1,46 @@
+﻿.header a, a:hover{
+    text-decoration:none
+}
+
+.header h1 {
+    letter-spacing: 5px;
+    font-size: 300%;
+}
+
+.nav-pills>li>a:hover{
+    background-color:#337AB7;
+    color:#FFF;
+}
+
+@media (max-width: 767px)
+{
+    .nav-pills>li{
+        float:none;
+    }
+
+    .nav-pills{
+        text-align:center;
+    }
+
+    .header h1{
+        text-align:center;
+        letter-spacing: 2px;
+        font-size:200%;
+    }
+
+    .header{
+        text-align:center;
+    }
+
+    /*.loginBlock{
+        border-width:thin;
+        border-style:solid;
+        border-color:gray;
+        border-radius:5px;
+    }*/
+
+    div.Message{
+        text-align:center;
+        border:double
+    }
+}

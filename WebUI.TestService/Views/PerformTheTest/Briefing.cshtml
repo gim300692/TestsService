@@ -1,0 +1,35 @@
+﻿@model TestService.WebUI.Models.TestExecutionViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Briefing</title>
+</head>
+<body>
+    <div> 
+        <div>
+            <span>Тест на тему: </span>
+            @Model.Test.Theme
+        </div>
+        <div>
+            <span>Описание: </span>
+            @Model.Test.Description
+        </div>
+        <div>
+            <span>Количество вопросов:</span>
+            @Model.Test.QuestionQuantity
+        </div>
+        <div>
+            <span>Время на выполнения теста:</span>
+            @Model.Test.TestSolveTime
+        </div>
+        @Html.ActionLink("Начать тестирование", "TestExecution", Model)
+    </div>
+</body>
+</html>
